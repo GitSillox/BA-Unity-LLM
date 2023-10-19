@@ -1,4 +1,5 @@
 using OpenAI.Audio;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ namespace OpenAI.Samples.Chat
     {
         //These are the elements needed to enable the microphone in your software:
         [SerializeField] private Button startRecordButton;
-        [SerializeField] private InputField message;
-        [SerializeField] private Dropdown dropdown;
+        [SerializeField] private TMP_InputField message;
+        [SerializeField] private TMP_Dropdown dropdown;
 
         private readonly int duration = 5;
 
@@ -26,7 +27,7 @@ namespace OpenAI.Samples.Chat
             api = new OpenAIClient();
             foreach (var device in Microphone.devices)
             {
-                dropdown.options.Add(new Dropdown.OptionData(device));
+                dropdown.options.Add(new TMP_Dropdown.OptionData(device));
             }
             startRecordButton.onClick.AddListener(StartRecording);
         }

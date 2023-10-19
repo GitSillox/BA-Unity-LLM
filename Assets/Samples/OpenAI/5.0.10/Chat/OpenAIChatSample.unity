@@ -3304,8 +3304,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRecordButton: {fileID: 1550066824}
-  message: {fileID: 0}
-  dropdown: {fileID: 0}
+  message: {fileID: 1377121433}
+  dropdown: {fileID: 297242577}
 --- !u!1 &1819767325
 GameObject:
   m_ObjectHideFlags: 0
