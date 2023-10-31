@@ -1,4 +1,5 @@
 using OpenAI.Audio;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,8 +28,9 @@ namespace OpenAI.Samples.Chat
             api = new OpenAIClient();
             foreach (var device in Microphone.devices)
             {
-                dropdown.options.Add(new TMP_Dropdown.OptionData(device));
+                dropdown.AddOptions(new List<string>(Microphone.devices));
             }
+            dropdown.RefreshShownValue();
             startRecordButton.onClick.AddListener(StartRecording);
         }
         private void StartRecording()
@@ -45,7 +47,6 @@ namespace OpenAI.Samples.Chat
             Microphone.End(null);
             var request = new AudioTranscriptionRequest(audioClip, language: "en");
             var result = await api.AudioEndpoint.CreateTranscriptionAsync(request);
-            Debug.Log(result);
             message.text = result;
         }
         private void Update()
