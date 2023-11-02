@@ -4,6 +4,7 @@ using OpenAI.Chat;
 using OpenAI.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -33,6 +34,8 @@ namespace OpenAI.Samples.Chat
 
         private CancellationTokenSource lifetimeCancellationTokenSource;
 
+        private AzureTTS tts;
+
         private void OnValidate()
         {
             inputField.Validate();
@@ -48,6 +51,18 @@ namespace OpenAI.Samples.Chat
             chatMessages.Add(new Message(Role.System, "You are a helpful assistant."));
             inputField.onSubmit.AddListener(SubmitChat);
             submitButton.onClick.AddListener(SubmitChat);
+        }
+        private void Start()
+        {
+            tts = GameObject.FindObjectOfType<AzureTTS>();
+            if (tts)
+            {
+                Debug.Log("INFO: TTS found, continue on.");
+            }
+            else
+            {
+                Debug.Log("ERROR: TTS not Found!");
+            }
         }
 
         private void OnDestroy()
@@ -87,7 +102,15 @@ namespace OpenAI.Samples.Chat
                           if (response.FirstChoice?.Delta != null)
                           {
                               assistantMessageContent.text += response.FirstChoice.Delta.ToString();
+                              //tts.Speak(response.FirstChoice.Delta.ToString());
                               scrollView.verticalNormalizedPosition = 0f;
+
+                              foreach (var choice in response.Choices.Where(choice => !string.IsNullOrEmpty(choice.Message?.Content)))
+                              {
+                                  // Completed response content
+                                  Debug.Log($"{choice.Message.Role}: {choice.Message.Content}");
+                                  tts.Speak(choice.Message.Content);
+                              }
                           }
                       }, lifetimeCancellationTokenSource.Token);
             }

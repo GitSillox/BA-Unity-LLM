@@ -10,10 +10,11 @@ namespace OpenAI.Samples.Chat
     {
         //These are the elements needed to enable the microphone in your software:
         [SerializeField] private Button startRecordButton;
+        [SerializeField] private Button stopRecordButton;
         [SerializeField] private TMP_InputField message;
         [SerializeField] private TMP_Dropdown dropdown;
 
-        private readonly int duration = 5;
+        private readonly int duration = 10;
 
         private AudioClip audioClip;
         private bool isRecording;
@@ -32,12 +33,11 @@ namespace OpenAI.Samples.Chat
             }
             dropdown.RefreshShownValue();
             startRecordButton.onClick.AddListener(StartRecording);
+            stopRecordButton.onClick.AddListener(stopRecordingEarly);
         }
         private void StartRecording()
         {
             isRecording = true;
-            startRecordButton.enabled = false;
-
             audioClip = Microphone.Start(dropdown.options[dropdown.value].text, false, duration, 44100);
         }
         private async void EndRecording()
@@ -48,6 +48,11 @@ namespace OpenAI.Samples.Chat
             var request = new AudioTranscriptionRequest(audioClip, language: "en");
             var result = await api.AudioEndpoint.CreateTranscriptionAsync(request);
             message.text = result;
+        }
+        private void stopRecordingEarly()
+        {
+            isRecording = false;
+            EndRecording();
         }
         private void Update()
         {
