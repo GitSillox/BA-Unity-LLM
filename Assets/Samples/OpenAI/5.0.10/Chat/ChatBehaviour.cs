@@ -28,41 +28,27 @@ namespace OpenAI.Samples.Chat
         [SerializeField]
         private ScrollRect scrollView;
 
-        private OpenAIClient openAI;
-
-        private readonly List<Message> chatMessages = new List<Message>();
-
-        private CancellationTokenSource lifetimeCancellationTokenSource;
-
         private AzureTTS tts;
 
-        private void OnValidate()
-        {
-            inputField.Validate();
-            contentArea.Validate();
-            submitButton.Validate();
-        }
+        // OpenAI
+        private OpenAIClient openAI;
+        private readonly List<Message> chatMessages = new List<Message>();
+        private CancellationTokenSource lifetimeCancellationTokenSource;
+        private Model selectedModel = Model.GPT3_5_Turbo;
+        private static bool isChatPending;
+
+
 
         private void Awake()
         {
-            OnValidate();
-            lifetimeCancellationTokenSource = new CancellationTokenSource();
-            openAI = new OpenAIClient();
-            chatMessages.Add(new Message(Role.System, "You are a helpful assistant."));
+            tts = FindObjectOfType<AzureTTS>();
+            if (tts) Debug.Log("INFO: TTS found, continue on.");
+            else Debug.Log("ERROR: TTS not Found!");
+
+            validateFields();
+            initOpenAi();
             inputField.onSubmit.AddListener(SubmitChat);
             submitButton.onClick.AddListener(SubmitChat);
-        }
-        private void Start()
-        {
-            tts = GameObject.FindObjectOfType<AzureTTS>();
-            if (tts)
-            {
-                Debug.Log("INFO: TTS found, continue on.");
-            }
-            else
-            {
-                Debug.Log("ERROR: TTS not Found!");
-            }
         }
 
         private void OnDestroy()
@@ -71,10 +57,41 @@ namespace OpenAI.Samples.Chat
             lifetimeCancellationTokenSource.Dispose();
             lifetimeCancellationTokenSource = null;
         }
+        private void initOpenAi()
+        {
+            lifetimeCancellationTokenSource = new CancellationTokenSource();
+            openAI = new OpenAIClient();
+            chatMessages.Add(new Message(Role.System,
+                @"
+                    You represent one character of the following three:
+                    Donald Duck, Daisy Duck, Goofy.
+
+                    You will know with which character you have to respond as, by extracting from the User: to: ```name```  part of the message.
+                    Example:
+                    to ```Donald```:
+                    means you have to answer as Donald Duck and noone else, even if the user requests to speak to someone else. You answer according to your role.
+
+                    The Characters have the following traits and descriptions:
+                    Format: ""Name"" : ""Description"".
+                    ""Donald Duck"" : You are the angry Disney character Donald Duck, you currently hate Goofy for being dumb, but you are in love with daisy.
+                    ""Daisy Duck"": ""You like Donald and your friend Goofy. You sometimes even hit on him""
+                    ""Goofy"": ""You dont know what might be angry about but you like both Donald and Daisy. You are always ending sentences with 'ah-juck'"".
+
+                    You answer in three steps: 
+                    1. you look at who you have to answer as. 
+                    2. you check that persons description.
+                    3. you answer in role of that character and description.
+                    4. you only answer to one person per user message.
+             "));
+        }
+        private void validateFields()
+        {
+            inputField.Validate();
+            contentArea.Validate();
+            submitButton.Validate();
+        }
 
         private void SubmitChat(string _) => SubmitChat();
-
-        private static bool isChatPending;
 
         private async void SubmitChat()
         {
@@ -96,7 +113,7 @@ namespace OpenAI.Samples.Chat
             try
             {
                 await openAI.ChatEndpoint.StreamCompletionAsync(
-                      new ChatRequest(chatMessages, Model.GPT3_5_Turbo),
+                      new ChatRequest(chatMessages, selectedModel),
                       response =>
                       {
                           if (response.FirstChoice?.Delta != null)
@@ -109,7 +126,7 @@ namespace OpenAI.Samples.Chat
                               {
                                   // Completed response content
                                   Debug.Log($"{choice.Message.Role}: {choice.Message.Content}");
-                                  tts.Speak(choice.Message.Content);
+                                  if (tts) tts.Speak(choice.Message.Content);
                               }
                           }
                       }, lifetimeCancellationTokenSource.Token);
@@ -126,7 +143,6 @@ namespace OpenAI.Samples.Chat
                     EventSystem.current.SetSelectedGameObject(inputField.gameObject);
                     submitButton.interactable = true;
                 }
-
                 isChatPending = false;
             }
         }
