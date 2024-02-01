@@ -1,0 +1,22 @@
+[ 28.11.2023 17:39:42 ] INFO: TTS found, continue on.
+[ 28.11.2023 17:39:58 ] Assistant: Doth thine heart yearn for wisdom's touch? Seek the key where shadows clutch. Unveil the tale of the ancient scroll, beneath the moon, where secrets stroll. Seek the veil, embrace the gloam, and unlock the trove of knowledge's home. Good luck, traveler.
+[ 28.11.2023 17:39:58 ] Latency to First Word: 1222,5664 ms
+[ 28.11.2023 17:39:58 ] Latency to Full Sentence: 7988,5948 ms
+[ 28.11.2023 17:40:05 ] Speech synthesis succeeded!
+Latency: 6882,1969 ms.
+[ 28.11.2023 17:40:36 ] Assistant: In the depths of darkness, treasures lie concealed,
+To navigate this realm, wisdom must be revealed.
+Seek the path less trodden, astray from the crowd,
+A forgotten tome holds secrets, speak truths aloud.
+[ 28.11.2023 17:40:36 ] Latency to First Word: 1394,2194 ms
+[ 28.11.2023 17:40:36 ] Latency to Full Sentence: 4515,6777 ms
+[ 28.11.2023 17:40:43 ] Speech synthesis succeeded!
+Latency: 6757,2682 ms.
+[ 28.11.2023 17:41:09 ] Assistant: Beyond the threshold lies ancient lore,
+Seek not just knowledge, but wisdom's core.
+In stillness and reflection, insight shall grow,
+The path to hidden truths, only the discerning shall know.
+[ 28.11.2023 17:41:09 ] Latency to First Word: 1278,3038 ms
+[ 28.11.2023 17:41:09 ] Latency to Full Sentence: 4097,6377 ms
+[ 28.11.2023 17:41:16 ] Speech synthesis succeeded!
+Latency: 6818,9807 ms.
