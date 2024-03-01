@@ -20,7 +20,7 @@ public class AzureTTS : MonoBehaviour
     private TMP_Text ttsDurationLog;
 
     // Replace with your own subscription key and service region (e.g., "westus").
-    private const string SubscriptionKey = "9e20cd54c9e14724997ab6644510ba39";
+    private const string SubscriptionKey = ""; //put subscription key here or setup .env
     private const string Region = "germanywestcentral";
 
     private const int SampleRate = 24000;
